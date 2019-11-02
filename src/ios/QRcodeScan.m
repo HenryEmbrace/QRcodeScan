@@ -10,8 +10,9 @@
 @implementation QRcodeScan
 -(void)ScanMethod:(CDVInvokedUrlCommand*)command{
     self.latestCommand = command;
-    WCQRCodeVC *WCVC = [[WCQRCodeVC alloc] init];
-    [self QRCodeScanVC:WCVC];
+    __weak QRcodeScan* weakSelf = self;
+    weakSelf.WCVC = [[WCQRCodeVC alloc] init];
+    [self QRCodeScanVC:weakSelf.WCVC];
 }
 
 
@@ -26,7 +27,7 @@
                 [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
                     if (granted) {
                         dispatch_sync(dispatch_get_main_queue(), ^{
-//                            [self.navigationController pushViewController:scanVC animated:YES];
+                            //                            [self.navigationController pushViewController:scanVC animated:YES];
                             [weakSelf.viewController presentViewController:scanVC animated:YES completion:nil];
                         });
                         NSLog(@"用户第一次同意了访问相机权限 - - %@", [NSThread currentThread]);
@@ -37,7 +38,7 @@
                 break;
             }
             case AVAuthorizationStatusAuthorized: {
-//                [self.navigationController pushViewController:scanVC animated:YES];
+                //                [self.navigationController pushViewController:scanVC animated:YES];
                 [self.viewController presentViewController:scanVC animated:YES completion:nil];
                 break;
             }
@@ -71,14 +72,18 @@
     [weakSelf.viewController presentViewController:alertC animated:YES completion:nil];
 }
 
-
+-(void)dismissQRViewController {
+    __weak QRcodeScan* weakSelf = self;
+    [weakSelf.WCVC dismissViewControllerAnimated:YES completion:nil];
+}
 -(void)capturedQRcodeScanWithString:(NSString*)str {
-        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:str] callbackId:self.latestCommand.callbackId];
-        // Unset the self.hasPendingOperation property
-        self.hasPendingOperation = NO;
+    NSLog(@"str------------:%@", str);
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:str] callbackId:self.latestCommand.callbackId];
+    // Unset the self.hasPendingOperation property
+    self.hasPendingOperation = NO;
     
     // Hide the picker view
-    [self.viewController dismissViewControllerAnimated:YES completion:nil];
+//    [self.viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
