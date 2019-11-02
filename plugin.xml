@@ -12,6 +12,7 @@
 			</config-file>
                     <header-file src="src/ios/QRcodeScan.h" />
                     <source-file src="src/ios/QRcodeScan.m" />
+                    <header-file src="src/ios/SGQRCode.h" />
                     <header-file src="src/ios/SGQRCode/SGQRCodeObtain.h" />
                     <source-file src="src/ios/SGQRCode/SGQRCodeObtain.m" />
                     <header-file src="src/ios/SGQRCode/SGQRCodeObtainConfigure.h" />
