@@ -83,7 +83,7 @@
     self.hasPendingOperation = NO;
     
     // Hide the picker view
-//    [self.viewController dismissViewControllerAnimated:YES completion:nil];
+    [self.viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
