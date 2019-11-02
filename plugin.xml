@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-QRcodeScan" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+	<name>QRcodeScan</name>
+	<js-module name="QRcodeScan" src="www/QRcodeScan.js">
+		<clobbers target="cordova.plugins.QRcodeScan" />
+		</js-module>
+		<platform name="ios">
+			<config-file parent="/*" target="config.xml">
+				<feature name="QRcodeScan">
+					<param name="ios-package" value="QRcodeScan" />
+				</feature>
+			</config-file>
+                    <header-file src="src/ios/QRcodeScan.h" />
+                    <source-file src="src/ios/QRcodeScan.m" />
+                    <header-file src="src/ios/SGQRCode/SGQRCodeObtain.h" />
+                    <source-file src="src/ios/SGQRCode/SGQRCodeObtain.m" />
+                    <header-file src="src/ios/SGQRCode/SGQRCodeObtainConfigure.h" />
+                    <source-file src="src/ios/SGQRCode/SGQRCodeObtainConfigure.m" />
+                    <header-file src="src/ios/SGQRCode/SGQRCodeScanView.h" />
+                    <source-file src="src/ios/SGQRCode/SGQRCodeScanView.m" />
+                    <header-file src="src/ios/SGQRCode/WCQRCodeVC.h" />
+                    <source-file src="src/ios/SGQRCode/WCQRCodeVC.m" />
+                    <resource-file src="src/ios/SGQRCode/SGQRCode.bundle" />
+                    
+                    <header-file src="src/ios/MBProgressHUD/MBProgressHUD.h" />
+                    <source-file src="src/ios/MBProgressHUD/MBProgressHUD.m" />
+                    <header-file src="src/ios/MBProgressHUD/MBProgressHUD+SGQRCode.h" />
+                    <source-file src="src/ios/MBProgressHUD/MBProgressHUD+SGQRCode.m" />
+                    <resource-file src="src/ios/MBProgressHUD/MBProgressHUD.bundle" />
+		</platform>
+</plugin>
