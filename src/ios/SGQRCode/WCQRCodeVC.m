@@ -8,7 +8,7 @@
 
 #import "WCQRCodeVC.h"
 #import "SGQRCode.h"
-#import "SkipViewController.h"
+//#import "SkipViewController.h"
 #import "MBProgressHUD+SGQRCode.h"
 
 @interface WCQRCodeVC () {
