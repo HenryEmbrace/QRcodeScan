@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) WCQRCodeVC *WCVC;
 -(void)ScanMethod:(CDVInvokedUrlCommand*)command;
 -(void)capturedQRcodeScanWithString:(NSString*)str;
--(void) dismissQRViewController;
+
 
 
 @end

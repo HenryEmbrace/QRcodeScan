@@ -8,10 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import "QRcodeScan.h"
+
 @class QRcodeScan;
 
 @interface WCQRCodeVC : UIViewController
 
-@property (nonatomic, strong) QRcodeScan *scanPlugin;
+@property (copy,nonatomic)void(^WCqrcodeVcBlock)(NSString *url);
 
 @end

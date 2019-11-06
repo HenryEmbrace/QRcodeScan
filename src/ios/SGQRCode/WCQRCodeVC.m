@@ -8,7 +8,7 @@
 
 #import "WCQRCodeVC.h"
 #import "SGQRCode.h"
-//#import "ScanSuccessJumpVC.h"
+#import "SkipViewController.h"
 #import "MBProgressHUD+SGQRCode.h"
 
 @interface WCQRCodeVC () {
@@ -25,7 +25,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
+
     /// 二维码开启方法
     [obtain startRunningWithBefore:nil completion:nil];
 }
@@ -69,25 +69,21 @@
     [obtain establishQRCodeObtainScanWithController:self configure:configure];
     [obtain setBlockWithQRCodeObtainScanResult:^(SGQRCodeObtain *obtain, NSString *result) {
         if (result) {
-            [MBProgressHUD SG_showMBProgressHUDWithModifyStyleMessage:@"正在处理..." toView:weakSelf.view];
+//                 SkipViewController *jumpVC = [[SkipViewController alloc] init];
+//                 jumpVC.skipStrUrl = result;
+//                 [MBProgressHUD SG_hideHUDForView:weakSelf.view];
+//                 [weakSelf.navigationController pushViewController:jumpVC animated:YES];
+
+//            [MBProgressHUD SG_showMBProgressHUDWithModifyStyleMessage:@"正在处理..." toView:weakSelf.view];
             [obtain stopRunning];
             [obtain playSoundName:@"SGQRCode.bundle/sound.caf"];
-            //             NSLog(@"the scanRest is : %@", result);
-            //            [self.scanPlugin capturedQRcodeScanWithString:result];
-            //            ScanSuccessJumpVC *jumpVC = [[ScanSuccessJumpVC alloc] init];
-            //            jumpVC.comeFromVC = ScanSuccessJumpComeFromWC;
-            //            jumpVC.jump_URL = result;
-            
-            [MBProgressHUD SG_hideHUDForView:weakSelf.view];
-            //                [weakSelf.navigationController pushViewController:jumpVC animated:YES];
-            [weakSelf.scanPlugin capturedQRcodeScanWithString:result];
-            [weakSelf.scanPlugin dismissQRViewController];
-            //            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            //                [MBProgressHUD SG_hideHUDForView:weakSelf.view];
-            ////                [weakSelf.navigationController pushViewController:jumpVC animated:YES];
-            //                 [self.scanPlugin capturedQRcodeScanWithString:result];
-            //                [self.scanPlugin dismissCamera];
-            //            });
+//             NSLog(@"the scanRest is : %@", result);
+
+
+            if (weakSelf.WCqrcodeVcBlock) {
+                weakSelf.WCqrcodeVcBlock(result);
+            }
+
         }
     }];
     [obtain setBlockWithQRCodeObtainScanBrightness:^(SGQRCodeObtain *obtain, CGFloat brightness) {
@@ -104,8 +100,15 @@
 - (void)setupNavigationBar {
     self.navigationItem.title = @"扫一扫";
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"相册" style:(UIBarButtonItemStyleDone) target:self action:@selector(rightBarButtonItenAction)];
-}
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:(UIBarButtonItemStyleDone) target:self action:@selector(leftBarButtonItenAction)];
 
+}
+- (void)leftBarButtonItenAction
+{
+    if (self.WCqrcodeVcBlock) {
+           self.WCqrcodeVcBlock(@"");
+    }
+}
 - (void)rightBarButtonItenAction {
     __weak typeof(self) weakSelf = self;
     
@@ -125,18 +128,25 @@
                 [MBProgressHUD SG_showMBProgressHUDWithOnlyMessage:@"未发现二维码/条形码" delayTime:1.0];
             });
         } else {
-            //            ScanSuccessJumpVC *jumpVC = [[ScanSuccessJumpVC alloc] init];
-            //            jumpVC.comeFromVC = ScanSuccessJumpComeFromWC;
-            NSLog(@"the scanRest is : %@", result);
-            [self.scanPlugin capturedQRcodeScanWithString:result];
+//            SkipViewController *jumpVC = [[SkipViewController alloc] init];
+//            jumpVC.skipStrUrl = result;
+//            [weakSelf.navigationController pushViewController:jumpVC animated:YES];
+//
+//            ScanSuccessJumpVC *jumpVC = [[ScanSuccessJumpVC alloc] init];
+//            jumpVC.comeFromVC = ScanSuccessJumpComeFromWC;
+//            NSLog(@"the scanRest is : %@", result);
+
+            if (weakSelf.WCqrcodeVcBlock) {
+                weakSelf.WCqrcodeVcBlock(result);
+            }
             if ([result hasPrefix:@"http"]) {
-                //                jumpVC.jump_URL = result;
+//                jumpVC.jump_URL = result;
             } else {
-                //                jumpVC.jump_bar_code = result;
+//                jumpVC.jump_bar_code = result;
             }
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 [MBProgressHUD SG_hideHUDForView:weakSelf.view];
-                //                [weakSelf.navigationController pushViewController:jumpVC animated:YES];
+//                [weakSelf.navigationController pushViewController:jumpVC animated:YES];
             });
         }
     }];
