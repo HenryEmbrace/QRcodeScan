@@ -10,28 +10,36 @@
 @implementation QRcodeScan
 -(void)ScanMethod:(CDVInvokedUrlCommand*)command{
     self.latestCommand = command;
+    self.hasPendingOperation = YES;
     __weak QRcodeScan* weakSelf = self;
     weakSelf.WCVC = [[WCQRCodeVC alloc] init];
     [self QRCodeScanVC:weakSelf.WCVC];
     weakSelf.WCVC.WCqrcodeVcBlock = ^(NSString *url) {
-        [weakSelf capturedQRcodeScanWithString:url];
+        [self.commandDelegate runInBackground:^{
+            CDVPluginResult * pluginRes = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:url];
+            [self.commandDelegate sendPluginResult:pluginRes callbackId:command.callbackId];
+        }];
+        
+        
+        
+        //        [weakSelf capturedQRcodeScanWithString:url];
         [weakSelf.WCVC dismissViewControllerAnimated:YES completion:nil];
         if ([url isEqualToString:@""]) {
             return ;
         }
-//                 UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"提示" message:url preferredStyle:UIAlertControllerStyleAlert];
-//
-//                 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-//                 NSLog(@"action = %@", action);
-//                }];
-//                 UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-//                                NSLog(@"action = %@", action);
-//                }];
-//
-//                 [alert addAction:defaultAction];
-//                 [alert addAction:cancelAction];
-//                 [self.viewController presentViewController:alert animated:YES completion:nil];
-
+        //                 UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"提示" message:url preferredStyle:UIAlertControllerStyleAlert];
+        //
+        //                 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        //                 NSLog(@"action = %@", action);
+        //                }];
+        //                 UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        //                                NSLog(@"action = %@", action);
+        //                }];
+        //
+        //                 [alert addAction:defaultAction];
+        //                 [alert addAction:cancelAction];
+        //                 [self.viewController presentViewController:alert animated:YES completion:nil];
+        
     };
 }
 
@@ -47,9 +55,9 @@
                 [AVCaptureDevice requestAccessForMediaType:AVMediaTypeVideo completionHandler:^(BOOL granted) {
                     if (granted) {
                         dispatch_sync(dispatch_get_main_queue(), ^{
-//                            [self.navigationController pushViewController:scanVC animated:YES];
+                            //                            [self.navigationController pushViewController:scanVC animated:YES];
                             UINavigationController * nav = [[UINavigationController alloc] initWithRootViewController:scanVC];
-
+                            
                             [weakSelf.viewController presentViewController:nav animated:YES completion:nil];
                         });
                         NSLog(@"用户第一次同意了访问相机权限 - - %@", [NSThread currentThread]);
@@ -60,8 +68,8 @@
                 break;
             }
             case AVAuthorizationStatusAuthorized: {
-//                [self.navigationController pushViewController:scanVC animated:YES];
-//                [self.viewController presentViewController:scanVC animated:YES completion:nil];
+                //                [self.navigationController pushViewController:scanVC animated:YES];
+                //                [self.viewController presentViewController:scanVC animated:YES completion:nil];
                 UINavigationController * nav = [[UINavigationController alloc] initWithRootViewController:scanVC];
                 [self.viewController presentViewController:nav animated:YES completion:nil];
                 break;
@@ -97,18 +105,15 @@
     [weakSelf.viewController presentViewController:alertC animated:YES completion:nil];
 }
 
--(void)dismissCamera {
-    __weak QRcodeScan* weakSelf = self;
-    [weakSelf.WCVC dismissViewControllerAnimated:YES completion:nil];
-}
+
 -(void)capturedQRcodeScanWithString:(NSString*)str {
-        //    NSLog(@"str------------:%@", str);
-        [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:str] callbackId:self.latestCommand.callbackId];
-        // Unset the self.hasPendingOperation property
-        self.hasPendingOperation = NO;
+    //    NSLog(@"str------------:%@", str);
+    [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:str] callbackId:self.latestCommand.callbackId];
+    // Unset the self.hasPendingOperation property
+    self.hasPendingOperation = NO;
     
     // Hide the picker view
-    [self.viewController dismissViewControllerAnimated:YES completion:nil];
+    //    [self.viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
