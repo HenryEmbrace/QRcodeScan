@@ -9,18 +9,19 @@
 
 @implementation QRcodeScan
 -(void)ScanMethod:(CDVInvokedUrlCommand*)command{
-    self.latestCommand = command;
-    self.hasPendingOperation = YES;
-    __weak QRcodeScan* weakSelf = self;
-    weakSelf.WCVC = [[WCQRCodeVC alloc] init];
-    [self QRCodeScanVC:weakSelf.WCVC];
-    weakSelf.WCVC.WCqrcodeVcBlock = ^(NSString *url) {
-        [self.commandDelegate runInBackground:^{
+    self.latestCommand = command;    
+    self.WCVC = [[WCQRCodeVC alloc] init];
+    [self QRCodeScanVC:self.WCVC];
+    
+    __weak QRcodeScan* weakSelf  = self;
+    self.WCVC.WCqrcodeVcBlock = ^(NSString *url) {
+        
+            [weakSelf.commandDelegate runInBackground:^{
+            
             CDVPluginResult * pluginRes = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:url];
-            [self.commandDelegate sendPluginResult:pluginRes callbackId:command.callbackId];
+            [weakSelf.commandDelegate sendPluginResult:pluginRes callbackId:command.callbackId];
+            
         }];
-        
-        
         
         //        [weakSelf capturedQRcodeScanWithString:url];
         [weakSelf.WCVC dismissViewControllerAnimated:YES completion:nil];
@@ -109,11 +110,7 @@
 -(void)capturedQRcodeScanWithString:(NSString*)str {
     //    NSLog(@"str------------:%@", str);
     [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:str] callbackId:self.latestCommand.callbackId];
-    // Unset the self.hasPendingOperation property
-    self.hasPendingOperation = NO;
     
-    // Hide the picker view
-    //    [self.viewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
